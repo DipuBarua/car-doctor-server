@@ -1,15 +1,20 @@
 const express = require('express');
+const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
-const app = express();
 
 // middleware 
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: [
+        // 'http://localhost:5173',
+        'https://car-doctor-81579.web.app',
+        'https://car-doctor-81579.firebaseapp.com',
+        // 'https://car-doctor-server-lemon-ten.vercel.app',
+    ],
     credentials: true,
 }));
 app.use(express.json());
@@ -57,7 +62,7 @@ const verifyToken = async (req, res, next) => {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const serviceCollection = client.db('carDoctor').collection('services');
         const bookingCollection = client.db('carDoctor').collection('bookings');
@@ -104,7 +109,7 @@ async function run() {
             console.log(req.query.email);
             console.log('user in the valid token:', req.user);
             // console.log('tok token', req.cookies.token);
-            if(req.query.email !== req.user.email){
+            if (req.query.email !== req.user.email) {
                 return res.status(403).send({ message: 'forbieden access' });
             }
 
@@ -151,7 +156,7 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
